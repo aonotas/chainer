@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-
 """Collection of :class:`~chainer.Link` implementations."""
 
 from chainer.links.activation import maxout
