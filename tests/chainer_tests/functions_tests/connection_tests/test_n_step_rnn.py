@@ -47,7 +47,8 @@ def _wrap_variable(x):
 
 
 @testing.parameterize(*testing.product({
-    'activation': ['tanh', 'relu']
+    'activation': ['tanh', 'relu'],
+    'rnn_algo': ['standard', 'static', 'dynamic'],
 }))
 class TestNStepRNN(unittest.TestCase):
 
@@ -85,7 +86,7 @@ class TestNStepRNN(unittest.TestCase):
         bs = _wrap_variable(bs_data)
         hy, ys = functions.n_step_rnn(
             self.n_layers, self.dropout, h, ws, bs, xs,
-            activation=self.activation)
+            activation=self.activation, rnn_algo=self.rnn_algo)
 
         e_hy = self.hx.copy()
         for ind in range(self.length):
@@ -149,7 +150,7 @@ class TestNStepRNN(unittest.TestCase):
             xs = inputs
             hy, ys = functions.n_step_rnn(
                 self.n_layers, self.dropout, hx, ws, bs, xs,
-                activation=self.activation)
+                activation=self.activation, rnn_algo=self.rnn_algo)
             return (hy, ) + ys
 
         gradient_check.check_backward(
@@ -199,7 +200,8 @@ class TestNStepRNN(unittest.TestCase):
         with chainer.using_config('enable_backprop', train), \
                 chainer.using_config('train', train):
             return functions.n_step_rnn(
-                self.n_layers, self.dropout, hx, ws, bs, xs)
+                self.n_layers, self.dropout, hx, ws, bs, xs, 
+                rnn_algo=self.rnn_algo)
 
     def check_call_cudnn_forward_training(self, use_cudnn):
         with chainer.using_config('use_cudnn', use_cudnn):
@@ -244,7 +246,8 @@ class TestNStepRNN(unittest.TestCase):
 
 
 @testing.parameterize(*testing.product({
-    'activation': ['tanh', 'relu']
+    'activation': ['tanh', 'relu'],
+    'rnn_algo': ['standard', 'static', 'dynamic'],
 }))
 class TestNStepBiRNN(unittest.TestCase):
 
