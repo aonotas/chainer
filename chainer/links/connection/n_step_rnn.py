@@ -211,6 +211,8 @@ class NStepRNNTanh(NStepRNNBase):
         in_size (int): Dimensionality of input vectors.
         out_size (int): Dimensionality of hidden states and output vectors.
         dropout (float): Dropout ratio.
+        rnn_algo (str): Persistent RNN algorithm name.
+            Please select from [``standard``, ``static``, ``dynamic``].
 
     .. seealso::
         :func:`chainer.functions.n_step_rnn`
@@ -219,9 +221,14 @@ class NStepRNNTanh(NStepRNNBase):
 
     n_weights = 2
     use_bi_direction = False
+    def __init__(self, n_layers, in_size, out_size, dropout, 
+                 rnn_algo='standard', **kwargs):
+        self.rnn_algo = rnn_algo
+        super(NStepRNNTanh, self).__init__(n_layers, in_size, out_size, 
+                                           dropout, **kwargs)
 
     def rnn(self, *args):
-        return rnn.n_step_rnn(*args, activation='tanh')
+        return rnn.n_step_rnn(*args, activation='tanh', rnn_algo=self.rnn_algo)
 
 
 class NStepRNNReLU(NStepRNNBase):
@@ -250,6 +257,8 @@ class NStepRNNReLU(NStepRNNBase):
         in_size (int): Dimensionality of input vectors.
         out_size (int): Dimensionality of hidden states and output vectors.
         dropout (float): Dropout ratio.
+        rnn_algo (str): Persistent RNN algorithm name.
+            Please select from [``standard``, ``static``, ``dynamic``].
 
     .. seealso::
         :func:`chainer.functions.n_step_rnn`
@@ -258,9 +267,14 @@ class NStepRNNReLU(NStepRNNBase):
 
     n_weights = 2
     use_bi_direction = False
+    def __init__(self, n_layers, in_size, out_size, dropout, 
+                 rnn_algo='standard', **kwargs):
+        self.rnn_algo = rnn_algo
+        super(NStepRNNReLU, self).__init__(n_layers, in_size, out_size, 
+                                           dropout, **kwargs)
 
     def rnn(self, *args):
-        return rnn.n_step_rnn(*args, activation='relu')
+        return rnn.n_step_rnn(*args, activation='relu', rnn_algo=self.rnn_algo)
 
 
 class NStepBiRNNTanh(NStepRNNBase):
@@ -289,7 +303,8 @@ class NStepBiRNNTanh(NStepRNNBase):
         in_size (int): Dimensionality of input vectors.
         out_size (int): Dimensionality of hidden states and output vectors.
         dropout (float): Dropout ratio.
-        use_cudnn (bool): Use cuDNN.
+        rnn_algo (str): Persistent RNN algorithm name.
+            Please select from [``standard``, ``static``, ``dynamic``].
 
     .. seealso::
         :func:`chainer.functions.n_step_birnn`
@@ -298,9 +313,15 @@ class NStepBiRNNTanh(NStepRNNBase):
 
     n_weights = 2
     use_bi_direction = True
+    def __init__(self, n_layers, in_size, out_size, dropout, 
+                 rnn_algo='standard', **kwargs):
+        self.rnn_algo = rnn_algo
+        super(NStepBiRNNTanh, self).__init__(n_layers, in_size, out_size, 
+                                             dropout, **kwargs)
 
     def rnn(self, *args):
-        return rnn.n_step_birnn(*args, activation='tanh')
+        return rnn.n_step_birnn(*args, activation='tanh', 
+                                rnn_algo=self.rnn_algo)
 
 
 class NStepBiRNNReLU(NStepRNNBase):
@@ -329,6 +350,8 @@ class NStepBiRNNReLU(NStepRNNBase):
         in_size (int): Dimensionality of input vectors.
         out_size (int): Dimensionality of hidden states and output vectors.
         dropout (float): Dropout ratio.
+        rnn_algo (str): Persistent RNN algorithm name.
+            Please select from [``standard``, ``static``, ``dynamic``].
 
     .. seealso::
         :func:`chainer.functions.n_step_birnn`
@@ -337,6 +360,12 @@ class NStepBiRNNReLU(NStepRNNBase):
 
     n_weights = 2
     use_bi_direction = True
+    def __init__(self, n_layers, in_size, out_size, dropout, 
+                 rnn_algo='standard', **kwargs):
+        self.rnn_algo = rnn_algo
+        super(NStepBiRNNReLU, self).__init__(n_layers, in_size, out_size, 
+                                             dropout, **kwargs)
 
     def rnn(self, *args):
-        return rnn.n_step_birnn(*args, activation='relu')
+        return rnn.n_step_birnn(*args, activation='relu', 
+                                rnn_algo=self.rnn_algo)

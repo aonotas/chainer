@@ -27,18 +27,18 @@ def _stack_weight(ws):
 
 class NStepLSTM(n_step_rnn.BaseNStepRNN):
 
-    def __init__(self, n_layers, states, lengths):
+    def __init__(self, n_layers, states, lengths, **kwargs):
         n_step_rnn.BaseNStepRNN.__init__(
             self, n_layers, states, lengths,
-            rnn_dir='uni', rnn_mode='lstm')
+            rnn_dir='uni', rnn_mode='lstm', rnn_algo='standard', **kwargs)
 
 
 class NStepBiLSTM(n_step_rnn.BaseNStepRNN):
 
-    def __init__(self, n_layers, states, lengths):
+    def __init__(self, n_layers, states, lengths, **kwargs):
         n_step_rnn.BaseNStepRNN.__init__(
             self, n_layers, states, lengths,
-            rnn_dir='bi', rnn_mode='lstm')
+            rnn_dir='bi', rnn_mode='lstm', rnn_algo='standard', **kwargs)
 
 
 def n_step_lstm(
