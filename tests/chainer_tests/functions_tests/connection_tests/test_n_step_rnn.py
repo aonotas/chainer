@@ -201,7 +201,7 @@ class TestNStepRNN(unittest.TestCase):
                 chainer.using_config('train', train):
             return functions.n_step_rnn(
                 self.n_layers, self.dropout, hx, ws, bs, xs, 
-                rnn_algo=self.rnn_algo)
+                activation=self.activation, rnn_algo=self.rnn_algo)
 
     def check_call_cudnn_forward_training(self, use_cudnn):
         with chainer.using_config('use_cudnn', use_cudnn):
@@ -289,7 +289,7 @@ class TestNStepBiRNN(unittest.TestCase):
         bs = _wrap_variable(bs_data)
         hy, ys = functions.n_step_birnn(
             self.n_layers, self.dropout, h, ws, bs, xs,
-            activation=self.activation)
+            activation=self.activation, rnn_algo=self.rnn_algo)
 
         xs_next = self.xs
         e_hy = self.hx.copy()
@@ -380,7 +380,7 @@ class TestNStepBiRNN(unittest.TestCase):
             xs = inputs
             hy, ys = functions.n_step_birnn(
                 self.n_layers, self.dropout, hx, ws, bs, xs,
-                activation=self.activation)
+                activation=self.activation, rnn_algo=self.rnn_algo)
             return (hy, ) + ys
 
         gradient_check.check_backward(
@@ -430,7 +430,8 @@ class TestNStepBiRNN(unittest.TestCase):
         with chainer.using_config('enable_backprop', train), \
                 chainer.using_config('train', train):
             return functions.n_step_birnn(
-                self.n_layers, self.dropout, hx, ws, bs, xs)
+                self.n_layers, self.dropout, hx, ws, bs, xs, 
+                activation=self.activation, rnn_algo=self.rnn_algo)
 
     def check_call_cudnn_forward_training(self, use_cudnn):
         with chainer.using_config('use_cudnn', use_cudnn):
