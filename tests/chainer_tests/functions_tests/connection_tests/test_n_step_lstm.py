@@ -34,7 +34,9 @@ def _wrap_variable(x):
     else:
         return chainer.Variable(x)
 
-
+@testing.parameterize(*testing.product({
+    'rnn_algo': ['standard', 'static', 'dynamic'],
+}))
 class TestNStepLSTM(unittest.TestCase):
 
     batches = [3, 2, 1]
@@ -82,7 +84,8 @@ class TestNStepLSTM(unittest.TestCase):
         ws = _wrap_variable(ws_data)
         bs = _wrap_variable(bs_data)
         hy, cy, ys = functions.n_step_lstm(
-            self.n_layers, self.dropout, h, c, ws, bs, xs)
+            self.n_layers, self.dropout, h, c, ws, bs, xs, 
+            rnn_algo=self.rnn_algo)
 
         e_hy = self.hx.copy()
         e_cy = self.cx.copy()
@@ -154,7 +157,8 @@ class TestNStepLSTM(unittest.TestCase):
                 bs.append(biases)
             xs = inputs
             hy, cy, ys = functions.n_step_lstm(
-                self.n_layers, self.dropout, hx, cx, ws, bs, xs)
+                self.n_layers, self.dropout, hx, cx, ws, bs, xs,
+                rnn_algo=self.rnn_algo)
             return (hy, cy) + ys
 
         gradient_check.check_backward(
@@ -186,7 +190,8 @@ class TestNStepLSTM(unittest.TestCase):
         with chainer.using_config('enable_backprop', train), \
                 chainer.using_config('train', train):
             return functions.n_step_lstm(
-                self.n_layers, self.dropout, hx, cx, ws, bs, xs)
+                self.n_layers, self.dropout, hx, cx, ws, bs, xs,
+                rnn_algo=self.rnn_algo)
 
     def check_call_cudnn_forward_training(self, use_cudnn):
         with chainer.using_config('use_cudnn', use_cudnn):
@@ -229,7 +234,9 @@ class TestNStepLSTM(unittest.TestCase):
         self.check_call_cudnn_backward('never')
         self.check_call_cudnn_backward('auto')
 
-
+@testing.parameterize(*testing.product({
+    'rnn_algo': ['standard', 'static', 'dynamic'],
+}))
 class TestNStepBiLSTM(unittest.TestCase):
 
     batches = [3, 2, 1]
@@ -280,7 +287,8 @@ class TestNStepBiLSTM(unittest.TestCase):
         ws = _wrap_variable(ws_data)
         bs = _wrap_variable(bs_data)
         hy, cy, ys = functions.n_step_bilstm(
-            self.n_layers, self.dropout, h, c, ws, bs, xs)
+            self.n_layers, self.dropout, h, c, ws, bs, xs,
+            rnn_algo=self.rnn_algo)
 
         xs_next = self.xs
         e_hy = self.hx.copy()
@@ -384,7 +392,8 @@ class TestNStepBiLSTM(unittest.TestCase):
                 bs.append(biases)
             xs = inputs
             hy, cy, ys = functions.n_step_bilstm(
-                self.n_layers, self.dropout, hx, cx, ws, bs, xs)
+                self.n_layers, self.dropout, hx, cx, ws, bs, xs,
+                rnn_algo=self.rnn_algo)
             return (hy, cy) + ys
 
         gradient_check.check_backward(
@@ -416,7 +425,8 @@ class TestNStepBiLSTM(unittest.TestCase):
         with chainer.using_config('enable_backprop', train), \
                 chainer.using_config('train', train):
             return functions.n_step_bilstm(
-                self.n_layers, self.dropout, hx, cx, ws, bs, xs)
+                self.n_layers, self.dropout, hx, cx, ws, bs, xs,
+                rnn_algo=self.rnn_algo)
 
     def check_call_cudnn_forward_training(self, use_cudnn):
         with chainer.using_config('use_cudnn', use_cudnn):
@@ -562,7 +572,7 @@ class TestNStepLSTMDropout(unittest.TestCase):
             with chainer.using_config('use_cudnn', self.use_cudnn):
                 hy2, cy2, ys2 = functions.n_step_lstm(
                     self.n_layers, self.dropout, self.hx, self.cx, self.ws,
-                    self.bs, self.xs)
+                    self.bs, self.xs, rnn_algo=self.rnn_algo)
 
             for i in range(self.length):
                 y_counts[i] += count_close(ys1[i].data, ys2[i].data)
