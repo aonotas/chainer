@@ -42,7 +42,8 @@ class NStepBiLSTM(n_step_rnn.BaseNStepRNN):
 
 
 def n_step_lstm(
-        n_layers, dropout_ratio, hx, cx, ws, bs, xs, **kwargs):
+        n_layers, dropout_ratio, hx, cx, ws, bs, xs, rnn_algo='standard',
+        **kwargs):
     """n_step_lstm(n_layers, dropout_ratio, hx, cx, ws, bs, xs)
 
     Stacked Uni-directional Long Short-Term Memory function.
@@ -178,11 +179,12 @@ for _ in range(8)])
     """
 
     return n_step_lstm_base(n_layers, dropout_ratio, hx, cx, ws, bs, xs,
-                            use_bi_direction=False, **kwargs)
+                            use_bi_direction=False, rnn_algo=rnn_algo, **kwargs)
 
 
 def n_step_bilstm(
-        n_layers, dropout_ratio, hx, cx, ws, bs, xs, **kwargs):
+        n_layers, dropout_ratio, hx, cx, ws, bs, xs, rnn_algo='standard',
+        **kwargs):
     """n_step_bilstm(n_layers, dropout_ratio, hx, cx, ws, bs, xs)
 
     Stacked Bi-directional Long Short-Term Memory function.
@@ -344,12 +346,12 @@ for _ in range(8)])
 
     """
     return n_step_lstm_base(n_layers, dropout_ratio, hx, cx, ws, bs, xs,
-                            use_bi_direction=True, **kwargs)
+                            use_bi_direction=True, rnn_algo=rnn_algo, **kwargs)
 
 
 def n_step_lstm_base(
         n_layers, dropout_ratio, hx, cx, ws, bs, xs, use_bi_direction,
-        **kwargs):
+        rnn_algo='standard', **kwargs):
     """Base function for Stack LSTM/BiLSTM functions.
 
     This function is used at :func:`chainer.functions.n_step_lstm` and
@@ -439,7 +441,7 @@ def n_step_lstm_base(
         else:
             rnn = NStepLSTM
 
-        hy, cy, ys = rnn(n_layers, states, lengths)(*inputs)
+        hy, cy, ys = rnn(n_layers, states, lengths, rnn_algo=rnn_algo)(*inputs)
         sections = numpy.cumsum(lengths[:-1])
         ys = chainer.functions.split_axis(ys, sections, 0)
         return hy, cy, ys
