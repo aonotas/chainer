@@ -34,6 +34,7 @@ def _wrap_variable(x):
     else:
         return chainer.Variable(x)
 
+
 @testing.parameterize(*testing.product({
     'rnn_algo': ['standard', 'static', 'dynamic'],
 }))
@@ -233,6 +234,7 @@ class TestNStepLSTM(unittest.TestCase):
         self.check_call_cudnn_backward('always')
         self.check_call_cudnn_backward('never')
         self.check_call_cudnn_backward('auto')
+
 
 @testing.parameterize(*testing.product({
     'rnn_algo': ['standard', 'static', 'dynamic'],
@@ -572,7 +574,7 @@ class TestNStepLSTMDropout(unittest.TestCase):
             with chainer.using_config('use_cudnn', self.use_cudnn):
                 hy2, cy2, ys2 = functions.n_step_lstm(
                     self.n_layers, self.dropout, self.hx, self.cx, self.ws,
-                    self.bs, self.xs, rnn_algo=self.rnn_algo)
+                    self.bs, self.xs)
 
             for i in range(self.length):
                 y_counts[i] += count_close(ys1[i].data, ys2[i].data)

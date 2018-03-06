@@ -33,6 +33,7 @@ def _wrap_variable(x):
     else:
         return chainer.Variable(x)
 
+
 @testing.parameterize(*testing.product({
     'rnn_algo': ['standard', 'static', 'dynamic'],
 }))
@@ -220,6 +221,7 @@ class TestNStepGRU(unittest.TestCase):
         self.check_call_cudnn_backward('always')
         self.check_call_cudnn_backward('never')
         self.check_call_cudnn_backward('auto')
+
 
 @testing.parameterize(*testing.product({
     'rnn_algo': ['standard', 'static', 'dynamic'],
