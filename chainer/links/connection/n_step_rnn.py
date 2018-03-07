@@ -47,6 +47,8 @@ class NStepRNNBase(link.ChainList):
         in_size (int): Dimensionality of input vectors.
         out_size (int): Dimensionality of hidden states and output vectors.
         dropout (float): Dropout ratio.
+        rnn_algo (str): Persistent RNN algorithm name.
+            Please select from [``standard``, ``static``, ``dynamic``].
 
     .. seealso::
         :func:`chainer.links.NStepRNNReLU`
@@ -56,7 +58,8 @@ class NStepRNNBase(link.ChainList):
 
     """  # NOQA
 
-    def __init__(self, n_layers, in_size, out_size, dropout, **kwargs):
+    def __init__(self, n_layers, in_size, out_size, dropout, 
+                 rnn_algo='standard', **kwargs):
         argument.check_unexpected_kwargs(
             kwargs, use_cudnn='use_cudnn argument is not supported anymore. '
             'Use chainer.using_config',
@@ -102,6 +105,7 @@ class NStepRNNBase(link.ChainList):
         self.dropout = dropout
         self.out_size = out_size
         self.direction = direction
+        self.rnn_algo = rnn_algo
 
     def init_hx(self, xs):
         shape = (self.n_layers * self.direction, len(xs), self.out_size)
@@ -221,9 +225,7 @@ class NStepRNNTanh(NStepRNNBase):
 
     n_weights = 2
     use_bi_direction = False
-    def __init__(self, n_layers, in_size, out_size, dropout, 
-                 rnn_algo='standard', **kwargs):
-        self.rnn_algo = rnn_algo
+    def __init__(self, n_layers, in_size, out_size, dropout, **kwargs):
         super(NStepRNNTanh, self).__init__(n_layers, in_size, out_size, 
                                            dropout, **kwargs)
 
@@ -267,9 +269,7 @@ class NStepRNNReLU(NStepRNNBase):
 
     n_weights = 2
     use_bi_direction = False
-    def __init__(self, n_layers, in_size, out_size, dropout, 
-                 rnn_algo='standard', **kwargs):
-        self.rnn_algo = rnn_algo
+    def __init__(self, n_layers, in_size, out_size, dropout, **kwargs):
         super(NStepRNNReLU, self).__init__(n_layers, in_size, out_size, 
                                            dropout, **kwargs)
 
@@ -313,9 +313,7 @@ class NStepBiRNNTanh(NStepRNNBase):
 
     n_weights = 2
     use_bi_direction = True
-    def __init__(self, n_layers, in_size, out_size, dropout, 
-                 rnn_algo='standard', **kwargs):
-        self.rnn_algo = rnn_algo
+    def __init__(self, n_layers, in_size, out_size, dropout, **kwargs):
         super(NStepBiRNNTanh, self).__init__(n_layers, in_size, out_size, 
                                              dropout, **kwargs)
 
@@ -360,9 +358,7 @@ class NStepBiRNNReLU(NStepRNNBase):
 
     n_weights = 2
     use_bi_direction = True
-    def __init__(self, n_layers, in_size, out_size, dropout, 
-                 rnn_algo='standard', **kwargs):
-        self.rnn_algo = rnn_algo
+    def __init__(self, n_layers, in_size, out_size, dropout, **kwargs):
         super(NStepBiRNNReLU, self).__init__(n_layers, in_size, out_size, 
                                              dropout, **kwargs)
 
